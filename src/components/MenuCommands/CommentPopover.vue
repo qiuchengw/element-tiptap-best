@@ -6,48 +6,23 @@
     trigger="click"
     popper-class="el-tiptap-popper"
   >
-    <div class="color-set">
-      <div v-for="color in colorSet" :key="color" class="color__wrapper">
-        <div
-          :style="{
-            'background-color': color,
-          }"
-          :class="{ 'color--selected': selectedColor === color }"
-          class="color"
-          @mousedown.prevent
-          @click.stop="confirmColor(color)"
-        />
-      </div>
-
-      <div class="color__wrapper">
-        <div
-          class="color color--remove"
-          @mousedown.prevent
-          @click.stop="confirmColor('')"
-        />
-      </div>
-    </div>
-
     <div class="color-hex">
       <el-input
-        v-model="color"
-        placeholder="HEX"
+        type="textarea"
+        autosize
+        placeholder="CTRL+Enter 确定"
         autofocus="true"
-        maxlength="7"
-        size="small"
-        class="color-hex__input"
-      />
-
-      <el-button
-        type="text"
-        size="small"
-        class="color-hex__button"
-        @click="confirmColor(color)"
+        maxlength="100"
+        v-model="commentVal"
+        show-word-limit
+        @keydown.native="handleKeyCode($event)"
       >
+      </el-input>
+
+      <el-button type="text" size="small" @click="confirmComment(commentVal)">
         {{ confirmText }}
       </el-button>
     </div>
-
     <command-button
       slot="reference"
       :enable-tooltip="et.tooltip"
@@ -80,18 +55,6 @@ import CommandButton from './CommandButton.vue';
 })
 export default class CommentPopover extends Vue {
   @Prop({
-    type: Array,
-    default: () => [],
-  })
-  readonly colorSet!: string[];
-
-  @Prop({
-    type: String,
-    default: '',
-  })
-  readonly selectedColor!: string;
-
-  @Prop({
     type: String,
     required: true,
   })
@@ -105,27 +68,39 @@ export default class CommentPopover extends Vue {
 
   @Prop({
     type: String,
-    default: 'OK',
+    default: '确定',
   })
   readonly confirmText!: string; // TODO: i18n ?
 
-  private color: string = '';
   private popoverVisible: boolean = false;
+  private commentVal: string = '';
 
   @Inject() readonly et!: any;
 
-  @Watch('selectedColor', {
-    immediate: true,
-  })
-  onSelectedColorChange(color: string): void {
-    this.color = color;
-  }
+  // @Watch('selectedColor', {
+  //   immediate: true,
+  // })
+  // onSelectedColorChange(color: string): void {
+  //   this.color = color;
+  // }
 
   @Emit('confirm')
-  confirmColor(color: string): string {
+  confirmComment(val: string): string {
     this.popoverVisible = false;
 
-    return color;
+    return val;
+  }
+
+  handleKeyCode(e: any) {
+    if (e.ctrlKey && e.keyCode == 13) {
+      //用户点击了ctrl+enter触发
+      e.preventDefault(); //阻止默认事件
+      console.log('====> the ctrl+enter keydown');
+      this.confirmComment(this.commentVal);
+    } else {
+      //用户点击了enter触发
+      console.log('====> the enter keydown');
+    }
   }
 }
 </script>

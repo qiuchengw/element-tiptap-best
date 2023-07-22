@@ -86,10 +86,11 @@ export default class Comments extends Mark implements MenuBtnView {
     }
 
     menuBtnView({ commands, getMarkAttrs, t }: MenuData) {
+        console.log("===> the comm:", this.options)
         return {
             component: CommentPopover,
             componentProps: {
-                colorSet: this.options.colors,
+                colorSet: this.options?.colors,
                 tooltip: "hello",
                 icon: 'tint',
             },
