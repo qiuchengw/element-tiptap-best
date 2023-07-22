@@ -4,8 +4,6 @@
       :extensions="textExtensions"
       content="Text ExtensionsText ExtensionsText ExtensionsText ExtensionsText ExtensionsText ExtensionsText ExtensionsText ExtensionsText ExtensionsText ExtensionsText Extensions"
       :userProps="extraProps"
-      @comment="handleComment"
-      @onTransaction="onTransactionEvent"
     />
 
     <el-tiptap

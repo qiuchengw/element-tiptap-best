@@ -41,14 +41,14 @@ export default class Comments extends Mark implements MenuBtnView {
 
     get defaultOptions() {
         return {
-            highlightColor: '#ffeb3b',
+            highlightColor: '#ffeb3beb',
         };
     }
 
     get schema() {
         return {
             attrs: {
-                highlightColor: '#ffeb3b',
+                highlightColor: '#ffeb3beb',
                 comment_id: '',
             },
             inline: true,
@@ -69,7 +69,8 @@ export default class Comments extends Mark implements MenuBtnView {
             toDOM(node) {
                 let ret = ['span', {
                     // 设置样式
-                    'style': `background-color:${node.attrs.highlightColor};border-bottom:1px dotted gray;border-radius:4px;`,
+                    // ;
+                    'style': `background-color:${node.attrs.highlightColor};border-bottom:3px double gray`,
                     'comment_id': node.attrs.comment_id,
                 }, 0];
                 // console.log("=======> the node:", node, ret);
