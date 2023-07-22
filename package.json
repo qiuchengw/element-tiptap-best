@@ -110,7 +110,6 @@
   "license": "MIT",
   "lint-staged": {
     "*.{js,vue}": [
-      "yarn lint",
       "git add"
     ]
   },

@@ -58,6 +58,7 @@ import {
   SelectAll,
   History,
   CodeView,
+  Comments,
 } from 'element-tiptap';
 
 import codemirror from 'codemirror';
@@ -84,6 +85,7 @@ export default {
         new TextHighlight({ bubble: true }),
         new FormatClear(),
         new History(),
+        new Comments({ bubble: true }),
       ],
       paragraphExtensions: [
         new Doc(),

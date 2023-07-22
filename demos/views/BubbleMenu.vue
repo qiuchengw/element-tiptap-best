@@ -1,5 +1,6 @@
 <template>
   <div class="el-tiptap-editor__wrapper">
+    <div>hello world</div>
     <el-tiptap :extensions="extensions" :content="content" />
   </div>
 </template>
@@ -30,6 +31,7 @@ import {
   TrailingNode,
   FormatClear,
   History,
+  Comments,
 } from 'element-tiptap';
 
 export default {
@@ -60,6 +62,7 @@ export default {
         new TrailingNode(),
         new FormatClear(),
         new History(),
+        new Comments(),
       ],
 
       content:

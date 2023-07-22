@@ -39,3 +39,4 @@ export class Print {}
 export class Preview {}
 export class SelectAll {}
 export class CodeView {}
+export class Comments {}
