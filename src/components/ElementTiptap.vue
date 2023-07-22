@@ -291,7 +291,9 @@ export default class ElTiptap extends Mixins(EditorStylesMixin, CodeViewMixin) {
     });
 
     // 加入一些自定义的事件
+    // @ts-ignore
     this.editor.emit = this.emitEvent.bind(this);
+    // @ts-ignore
     this.editor.userProps = this.userProps;
 
     this.$emit(this.genEvent(EVENTS.INIT), {
