@@ -1,6 +1,12 @@
 <template>
   <div class="el-tiptap-editor__wrapper">
-    <el-tiptap :extensions="textExtensions" content="Text Extensions" />
+    <el-tiptap
+      :extensions="textExtensions"
+      content="Text ExtensionsText ExtensionsText ExtensionsText ExtensionsText ExtensionsText ExtensionsText ExtensionsText ExtensionsText ExtensionsText ExtensionsText Extensions"
+      :userProps="extraProps"
+      @comment="handleComment"
+      @onTransaction="onTransactionEvent"
+    />
 
     <el-tiptap
       :extensions="paragraphExtensions"
@@ -70,6 +76,17 @@ import 'codemirror/addon/edit/closetag.js'; // autoCloseTags
 export default {
   data() {
     return {
+      extraProps: {
+        comments: {
+          onAddComment: (comment, quote) => {
+            console.log('====onAddComment:', comment, quote);
+            return '99999';
+          },
+          onSelectComment: (comment_id) => {
+            console.log('====onSelectComment:', comment_id);
+          },
+        },
+      },
       textExtensions: [
         new Doc(),
         new Text(),
@@ -131,6 +148,16 @@ export default {
         new History(),
       ],
     };
+  },
+
+  methods: {
+    handleComment(editor) {
+      console.log('====editor comment:', editor);
+    },
+
+    onTransactionEvent(event) {
+      console.log('🔥transaction', event);
+    },
   },
 };
 </script>

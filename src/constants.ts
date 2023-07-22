@@ -25,6 +25,7 @@ export const enum EVENTS {
   PASTE = 'paste',
   DROP = 'drop',
   UPDATE = 'update',
+  COMMENT = 'comment',
 };
 
 export const PREVIEW_WINDOW_WIDTH: string = '80vw';

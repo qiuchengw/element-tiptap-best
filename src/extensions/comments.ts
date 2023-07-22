@@ -4,6 +4,8 @@
 //
 // import { Mark, MenuData, mergeAttributes } from 'tiptap';
 import { Mark, MenuData } from 'tiptap';
+import { Plugin, TextSelection } from 'prosemirror-state';
+import { getMarkRange } from 'tiptap-utils';
 import { v4 as uuidv4 } from "uuid";
 // import {findIndex} from 'lodash'
 import CommentPopover from '@/components/MenuCommands/CommentPopover.vue';
@@ -59,6 +61,8 @@ declare module 'tiptap' {
 }
 
 export default class Comments extends Mark implements MenuBtnView {
+    private emitFunc: Function = null;
+    private commentsProps: Object = null;
     get name() {
         return 'comments';
     }
@@ -93,14 +97,47 @@ export default class Comments extends Mark implements MenuBtnView {
                 },
             }],
             toDOM(node) {
-                let ret = ['span', { 
-                    'style': `background-color:${node.attrs.highlightColor}`,
-                    'comment_id': node.attrs.comment_id
+                let ret = ['span', {
+                    'style': `background-color:${node.attrs.highlightColor};border-bottom:1px dotted gray`,
+                    'comment_id': node.attrs.comment_id,
                 }, 0];
                 // console.log("=======> the node:", node, ret);
                 return ret;
             },
         };
+    }
+
+    get plugins() {
+        return [
+            new Plugin({
+                props: {
+                    handleClick(view: EditorView, pos: number) {
+                        const { schema, doc, tr } = view.state;
+
+                        const range = getMarkRange(doc.resolve(pos), schema.marks.comments);
+
+                        if (!range) return false;
+
+                        const $start = doc.resolve(range.from);
+                        const $end = doc.resolve(range.to);
+
+                        const transaction = tr.setSelection(new TextSelection($start, $end));
+                        console.log("====> the p0lugindd:", transaction, schema, doc, view);
+
+                        let dom = view.dom;
+                        let comment_id = dom.getAttribute('comment_id');
+                        console.log("====> the comment_id:", comment_id);
+                        if (this.commentsProps?.onSelectComment) { 
+                            this.commentsProps.onSelectComment(comment_id);
+                        }
+
+                        // 提交消息到外面的组件上
+                        view.dispatch(transaction);
+                        return true;
+                    },
+                },
+            }),
+        ];
     }
 
     // 添加commands，这个是tiptap调用的
@@ -109,18 +146,25 @@ export default class Comments extends Mark implements MenuBtnView {
     // 返回对象的时候，那么命令的名字就是对象的key
     commands() {
         return {
-            setComment: (comment): CommandFunction =>
+            setComment: (comment, quoteText): CommandFunction =>
                 (state, dispatch) => {
                     console.log("===> the comment:", this.storage);
                     // 添加评论
                     // let comment_id = this.addComments(comment);
-                    let comment_id = "8888";
+                    let comment_id = null;
+                    if (this.commentsProps?.onAddComment) { 
+                        comment_id = this.commentsProps.onAddComment(comment, quoteText);
+                    }
+                    if (!comment_id) {
+                        return;
+                    }
+                    
                     // 设置颜色
                     const { schema } = state;
                     let { tr } = state;
                     const markType = schema.marks.comments;
                     console.log("===> the mark:", schema);
-                    const attrs = { 
+                    const attrs = {
                         comment_id: comment_id,
                         highlightColor: this.options.highlightColor
                     };
@@ -140,8 +184,14 @@ export default class Comments extends Mark implements MenuBtnView {
     }
 
     menuBtnView(menuData: MenuData) {
-        let { commands, getMarkAttrs, t } = menuData;
-        // console.log("===> the comm:", this.options, menuData);
+        let { commands, editor, getMarkAttrs, t } = menuData;
+        // console.log("===> the comm:", menuData);
+        if (!this.emitFunc) {
+            this.emitFunc = editor?.emit;
+        }
+        if (!this.commentsProps) {
+            this.commentsProps = editor?.userProps?.comments;
+        }
         return {
             component: CommentPopover,
             componentProps: {
@@ -158,100 +208,5 @@ export default class Comments extends Mark implements MenuBtnView {
                 },
             },
         };
-    }
-
-    addOptions() {
-        return {
-            user: {}
-        }
-    }
-
-    addStorage() {
-        console.log("===>add Storage");
-        return {
-            comments: [],
-            comment_id: null
-        }
-    }
-
-    // EditorCommandSet
-    addComments(comment: CommentInterface) {
-        let commentsList: CustomCommentInterface;
-        const finalComment: CommentInterface = {
-            uuid: uuidv4(),
-            user: this.options.user,
-            comment: comment.comment,
-            date: Date.now(),
-            parent_title: null,
-            parent_id: null
-        };
-
-        // let threadId = "";
-        if (comment.parent_id) {
-            const index = findIndex(this.storage.comments, { threadId: this.storage.comment_id });
-            const commentIndex = findIndex(this.storage.comments[index].comments ?? [], { uuid: comment.parent_id });
-            const parent = this.storage.comments[index];
-            if (parent && parent.comments) {
-                finalComment.parent_id = parent.comments[commentIndex].uuid;
-                finalComment.parent_title = parent.comments[commentIndex].comment.substring(0, 50);
-            }
-            this.storage.comments[index].comments?.push(finalComment)
-        } else {
-            commentsList = {
-                threadId: uuidv4(),
-                comments: []
-            };
-            commentsList.comments?.push(finalComment);
-            // commands.setMark('comment', { 'comment_id': commentsList.threadId })
-            this.storage.comments.push(commentsList);
-        }
-    }
-
-    // @ts-ignore
-    // removeSpecificComment: (threadId: string, commentId: string) => ({commands}) => {
-    //     let comments = this.storage?.comments;
-    //     const index = findIndex(comments, {threadId: threadId})
-    //     if (comments[index].comments) {
-
-    //         const commentIndex = findIndex(comments[index].comments ?? [], {uuid: commentId})
-    //         comments[index].comments?.splice(commentIndex, 1)
-
-    //         if (!comments[index].comments?.length) {
-    //             comments.splice(index, 1);
-    //         }
-
-    //         this.storage.comments = comments;
-    //         this.editor.state.doc.descendants((node: any, pos: any) => {
-    //             const {marks} = node
-    //             marks.forEach((mark: any) => {
-    //                     if (mark.type.name === 'comment') {
-    //                         const comment_id = mark.attrs.comment_id;
-    //                         if (!this.storage.comments.filter(obj => obj.threadId === comment_id).length) {
-
-    //                             this.editor.commands.setTextSelection({
-    //                                 from: pos,
-    //                                 to: pos + (node.text?.length || 0),
-    //                             })
-    //                             this.editor.commands.unsetMark('comment');
-    //                         }
-    //                     }
-    //                 }
-    //             )
-
-    //         });
-    //     }
-    //     return true;
-    // }
-
-    // @ts-ignore
-    onSelectionUpdate({ editor }) {
-        if (!editor.isActive('comment')) {
-            this.storage.comment_id = null;
-        } else {
-            this.storage.comment_id = editor.getAttributes('comment').comment_id;
-        }
-    }
-    onUpdate() {
-
     }
 };

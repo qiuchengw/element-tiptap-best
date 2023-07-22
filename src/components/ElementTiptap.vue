@@ -2,10 +2,13 @@
   <div
     v-if="editor"
     :style="elTiptapEditorStyle"
-    :class="[{
-      'el-tiptap-editor': true,
-      'el-tiptap-editor--fullscreen': isFullscreen,
-    }, editorClass]"
+    :class="[
+      {
+        'el-tiptap-editor': true,
+        'el-tiptap-editor--fullscreen': isFullscreen,
+      },
+      editorClass,
+    ]"
   >
     <menu-bubble
       :editor="editor"
@@ -16,18 +19,15 @@
     <menu-bar
       v-if="showMenubar"
       :editor="editor"
-      :class="[{
-        'border-top-radius': showMenubar,
-      }, editorMenubarClass]"
+      :class="[
+        {
+          'border-top-radius': showMenubar,
+        },
+        editorMenubarClass,
+      ]"
     >
-      <template
-        v-if="$scopedSlots.menubar"
-        v-slot="slotProps"
-      >
-        <slot
-          name="menubar"
-          v-bind="slotProps"
-        />
+      <template v-if="$scopedSlots.menubar" v-slot="slotProps">
+        <slot name="menubar" v-bind="slotProps" />
       </template>
     </menu-bar>
 
@@ -45,23 +45,26 @@
     <editor-content
       v-show="!isCodeViewMode"
       :editor="editor"
-      :class="[{
-        'el-tiptap-editor__content': true,
-        'border-top-radius': !showMenubar,
-        'border-bottom-radius': !showFooter,
-      }, editorContentClass]"
+      :class="[
+        {
+          'el-tiptap-editor__content': true,
+          'border-top-radius': !showMenubar,
+          'border-bottom-radius': !showFooter,
+        },
+        editorContentClass,
+      ]"
     />
 
-    <slot
-      name="footer"
-      :editor="editor"
-    >
+    <slot name="footer" :editor="editor">
       <div
         v-if="showFooter"
-        :class="[{
-          'el-tiptap-editor__footer': true,
-          'border-bottom-radius': showFooter,
-        }, editorFooterClass]"
+        :class="[
+          {
+            'el-tiptap-editor__footer': true,
+            'border-bottom-radius': showFooter,
+          },
+          editorFooterClass,
+        ]"
       >
         <span class="el-tiptap-editor__characters">
           {{ t('editor.characters') }}: {{ characters }}
@@ -72,7 +75,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Watch, Provide, Model, Mixins } from 'vue-property-decorator';
+import {
+  Component,
+  Prop,
+  Watch,
+  Provide,
+  Model,
+  Mixins,
+} from 'vue-property-decorator';
 import { Editor, EditorContent, Extension, EditorUpdateEvent } from 'tiptap';
 import { Placeholder } from 'tiptap-extensions';
 import { Node as ProsemirrorNode } from 'prosemirror-model';
@@ -93,6 +103,7 @@ const COMMON_EMIT_EVENTS: EVENTS[] = [
   EVENTS.BLUR,
   EVENTS.PASTE,
   EVENTS.DROP,
+  EVENTS.COMMENT,
 ];
 
 @Component({
@@ -191,6 +202,12 @@ export default class ElTiptap extends Mixins(EditorStylesMixin, CodeViewMixin) {
   readonly editorBubbleMenuClass!: string | any[] | object;
 
   @Prop({
+    type: Object,
+    default: undefined,
+  })
+  readonly userProps!: object;
+
+  @Prop({
     type: [String, Array, Object],
     default: undefined,
   })
@@ -209,7 +226,7 @@ export default class ElTiptap extends Mixins(EditorStylesMixin, CodeViewMixin) {
 
   @Provide() get et(): ElTiptap {
     return this;
-  };
+  }
 
   get characters(): number {
     if (!this.editor) return 0;
@@ -273,6 +290,10 @@ export default class ElTiptap extends Mixins(EditorStylesMixin, CodeViewMixin) {
       onUpdate: this.onUpdate.bind(this),
     });
 
+    // 加入一些自定义的事件
+    this.editor.emit = this.emitEvent.bind(this);
+    this.editor.userProps = this.userProps;
+
     this.$emit(this.genEvent(EVENTS.INIT), {
       editor: this.editor,
     });
@@ -289,7 +310,7 @@ export default class ElTiptap extends Mixins(EditorStylesMixin, CodeViewMixin) {
     extensions.push(
       new ContentAttributes({
         spellcheck: this.spellcheckEnabled,
-      }),
+      })
     );
 
     // placeholder
@@ -298,9 +319,10 @@ export default class ElTiptap extends Mixins(EditorStylesMixin, CodeViewMixin) {
     return extensions;
   }
 
-  emitEvent(event: EVENTS) {
+  emitEvent(event: EVENTS, data: any = null) {
     this.$emit(this.genEvent(event), {
       editor: this.editor,
+      data,
     });
   }
 
@@ -327,9 +349,9 @@ export default class ElTiptap extends Mixins(EditorStylesMixin, CodeViewMixin) {
   }
 
   private getTitleExtension(): Title | null {
-    const doc = this.extensions.find(e => e.name === 'doc');
+    const doc = this.extensions.find((e) => e.name === 'doc');
     if (doc.options.title) {
-      const title = this.extensions.find(e => e.name === 'title');
+      const title = this.extensions.find((e) => e.name === 'title');
       if (title) return title;
     }
     return null;
@@ -358,7 +380,7 @@ export default class ElTiptap extends Mixins(EditorStylesMixin, CodeViewMixin) {
       emptyNodeText: this.placeholder,
     });
   }
-};
+}
 </script>
 
 <style lang="scss">

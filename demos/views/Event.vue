@@ -6,6 +6,7 @@
       :editor-properties="editorProperties"
       placeholder="Write something ..."
       @onInit="onInitEvent"
+      @onComment="handleComment"
       @onTransaction="onTransactionEvent"
       @onFocus="onFocusEvent"
       @onBlur="onBlurEvent"
@@ -38,12 +39,14 @@ import {
   TextAlign,
   Indent,
   History,
+  Comments,
 } from 'element-tiptap';
 
 export default {
   data() {
     return {
       extensions: [
+        new Comments({ bubble: true }),
         new Doc(),
         new Text(),
         new Paragraph(),
@@ -73,6 +76,9 @@ export default {
           },
           handleTextInput() {
             console.log('🚀EditorProps: TextInput');
+          },
+          handleClickOn(view, pos, node, nodePos) {
+            console.log('🚀EditorProps: ClickOn', view, pos, node, nodePos);
           },
         },
       },
@@ -109,6 +115,10 @@ export default {
 
     onUpdateEvent() {
       console.log('🔥update');
+    },
+
+    handleComment() {
+      console.log('🔥comment');
     },
   },
 };

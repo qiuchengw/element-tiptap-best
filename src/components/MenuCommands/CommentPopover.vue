@@ -97,9 +97,6 @@ export default class CommentPopover extends Vue {
       e.preventDefault(); //阻止默认事件
       console.log('====> the ctrl+enter keydown');
       this.confirmComment(this.commentVal);
-    } else {
-      //用户点击了enter触发
-      console.log('====> the enter keydown');
     }
   }
 }
