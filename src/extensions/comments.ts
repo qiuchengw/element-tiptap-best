@@ -5,41 +5,13 @@
 // import { Mark, MenuData, mergeAttributes } from 'tiptap';
 import { Mark, MenuData } from 'tiptap';
 import { Plugin, TextSelection } from 'prosemirror-state';
-import { getMarkRange } from 'tiptap-utils';
+import { getMarkRange, getMarkAttrs } from 'tiptap-utils';
 import { v4 as uuidv4 } from "uuid";
 // import {findIndex} from 'lodash'
 import CommentPopover from '@/components/MenuCommands/CommentPopover.vue';
 import { CommandFunction } from 'tiptap-commands';
 import { MenuBtnView } from '@/../types';
 import applyMark from '@/utils/apply_mark';
-
-export interface CommentInterface {
-    user: any,
-    uuid: string | null,
-    comment: string,
-    date: number | null,
-    parent_id: string | null
-    parent_title: string | null
-}
-
-export interface Comment {
-    comment: string,
-    parent_id: string | null
-}
-
-export interface CustomCommentInterface {
-    threadId: string | null,
-    comments: CommentInterface[] | null
-}
-
-interface CommentsStorageInterface {
-    comments: CustomCommentInterface[],
-    comment_id: string | null
-}
-
-export interface CommentOptionsInterface {
-    user: {}
-}
 
 declare module 'tiptap' {
     interface Commands<ReturnType> {
@@ -69,16 +41,14 @@ export default class Comments extends Mark implements MenuBtnView {
 
     get defaultOptions() {
         return {
-            highlightColor: '#ff0000',
-            // 当前用户
-            user: ''
+            highlightColor: '#ffeb3b',
         };
     }
 
     get schema() {
         return {
             attrs: {
-                highlightColor: '#ff0000',
+                highlightColor: '#ffeb3b',
                 comment_id: '',
             },
             inline: true,
@@ -98,7 +68,8 @@ export default class Comments extends Mark implements MenuBtnView {
             }],
             toDOM(node) {
                 let ret = ['span', {
-                    'style': `background-color:${node.attrs.highlightColor};border-bottom:1px dotted gray`,
+                    // 设置样式
+                    'style': `background-color:${node.attrs.highlightColor};border-bottom:1px dotted gray;border-radius:4px;`,
                     'comment_id': node.attrs.comment_id,
                 }, 0];
                 // console.log("=======> the node:", node, ret);
@@ -108,31 +79,30 @@ export default class Comments extends Mark implements MenuBtnView {
     }
 
     get plugins() {
+        let that = this;
         return [
             new Plugin({
                 props: {
                     handleClick(view: EditorView, pos: number) {
                         const { schema, doc, tr } = view.state;
-
                         const range = getMarkRange(doc.resolve(pos), schema.marks.comments);
-
-                        if (!range) return false;
+                        if (!range) {
+                            return false;
+                        }
 
                         const $start = doc.resolve(range.from);
                         const $end = doc.resolve(range.to);
-
                         const transaction = tr.setSelection(new TextSelection($start, $end));
-                        console.log("====> the p0lugindd:", transaction, schema, doc, view);
-
-                        let dom = view.dom;
-                        let comment_id = dom.getAttribute('comment_id');
-                        console.log("====> the comment_id:", comment_id);
-                        if (this.commentsProps?.onSelectComment) { 
-                            this.commentsProps.onSelectComment(comment_id);
+                        // 重要，获取当前的mark的属性
+                        let attrs = getMarkAttrs(view.state, schema.marks.comments)
+                        let comment_id = attrs.comment_id;
+                        // console.log("===> select:", that.commentsProps, comment_id);
+                        // 提交消息到外面的组件上
+                        if (that.commentsProps?.onSelectComment && comment_id) {
+                            that.commentsProps.onSelectComment(comment_id);
                         }
 
-                        // 提交消息到外面的组件上
-                        view.dispatch(transaction);
+                        // view.dispatch(transaction);
                         return true;
                     },
                 },
@@ -150,20 +120,19 @@ export default class Comments extends Mark implements MenuBtnView {
                 (state, dispatch) => {
                     console.log("===> the comment:", this.storage);
                     // 添加评论
-                    // let comment_id = this.addComments(comment);
                     let comment_id = null;
-                    if (this.commentsProps?.onAddComment) { 
+                    if (this.commentsProps?.onAddComment) {
                         comment_id = this.commentsProps.onAddComment(comment, quoteText);
                     }
                     if (!comment_id) {
                         return;
                     }
-                    
+
                     // 设置颜色
                     const { schema } = state;
                     let { tr } = state;
                     const markType = schema.marks.comments;
-                    console.log("===> the mark:", schema);
+                    // console.log("===> the mark:", schema);
                     const attrs = {
                         comment_id: comment_id,
                         highlightColor: this.options.highlightColor
@@ -191,11 +160,12 @@ export default class Comments extends Mark implements MenuBtnView {
         }
         if (!this.commentsProps) {
             this.commentsProps = editor?.userProps?.comments;
+            // console.log("====> comment prosp:", this.commentsProps);
         }
         return {
             component: CommentPopover,
             componentProps: {
-                colorSet: this.options?.colors,
+                // colorSet: this.options?.colors,
                 tooltip: "hello",
                 icon: 'tint',
             },

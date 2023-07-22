@@ -73,6 +73,7 @@ import 'codemirror/mode/xml/xml.js'; // language
 import 'codemirror/addon/selection/active-line.js'; // require active-line.js
 import 'codemirror/addon/edit/closetag.js'; // autoCloseTags
 
+let cnt = 1;
 export default {
   data() {
     return {
@@ -80,7 +81,9 @@ export default {
         comments: {
           onAddComment: (comment, quote) => {
             console.log('====onAddComment:', comment, quote);
-            return '99999';
+            cnt++;
+            console.log('===> fuck cnt:', cnt);
+            return `${cnt}`;
           },
           onSelectComment: (comment_id) => {
             console.log('====onSelectComment:', comment_id);
