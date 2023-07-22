@@ -28,7 +28,7 @@ export default class TextHighlight extends Mark implements MenuBtnView {
         tag: 'span[style*=background-color]',
         getAttrs: (dom: HTMLElement) => {
           const { backgroundColor } = dom.style;
-
+          console.log("===> fuck 222222", backgroundColor, dom);
           return {
             highlightColor: backgroundColor,
           };
@@ -40,13 +40,16 @@ export default class TextHighlight extends Mark implements MenuBtnView {
         if (highlightColor) {
           style += `background-color: ${highlightColor};`;
         }
-        return ['span', { style }, 0];
+        let ret = ['span', { style }, 0];
+        console.log("====> fuck styel:", style, ret);
+        return ret;
       },
     };
   }
 
   commands() {
     return (color: string): CommandFunction => (state, dispatch) => {
+      console.log("======> fuck corlo:", color);
       if (color !== undefined) {
         const { schema } = state;
         let { tr } = state;
