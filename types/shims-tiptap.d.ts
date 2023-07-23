@@ -86,6 +86,7 @@ declare module 'tiptap' {
   interface EditorOptions {
     editorProps?: EditorProps;
     editable?: boolean;
+    composing?: boolean;
     autoFocus?: boolean;
     extensions?: (Extension | Node | Mark)[];
     content?: Object | string;
@@ -98,6 +99,8 @@ declare module 'tiptap' {
     useBuiltInExtensions?: boolean;
     disableInputRules?: boolean;
     disablePasteRules?: boolean;
+    quickInsertVisible?: boolean;
+    addLinkVisible?: boolean;
     dropCursor?: {};
     parseOptions?: ParseOptions;
     injectCSS?: boolean;
@@ -132,6 +135,7 @@ declare module 'tiptap' {
     keymaps: any[];
     marks: Mark[];
     nodes: Node[];
+    options: any;
     pasteRules: any[];
     plugins: Plugin[];
     schema: Schema;

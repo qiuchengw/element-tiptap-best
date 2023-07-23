@@ -31,6 +31,7 @@ export default {
           tooltip: 'Apply link',
           control: {
             title: 'Apply Link',
+            text: 'text',
             href: 'Href',
             open_in_new_tab: 'Open in new tab',
             confirm: 'Apply',
@@ -41,6 +42,7 @@ export default {
           tooltip: 'Edit link',
           control: {
             title: 'Edit Link',
+            text: 'text',
             href: 'Href',
             open_in_new_tab: 'Open in new tab',
             confirm: 'Update',
@@ -119,6 +121,7 @@ export default {
         tooltip: 'Todo list',
       },
       TextAlign: {
+        tooltip: 'Align type',
         buttons: {
           align_left: {
             tooltip: 'Align left',
@@ -136,16 +139,20 @@ export default {
       },
       FontType: {
         tooltip: 'Font family',
+        default: 'Default',
       },
       FontSize: {
         tooltip: 'Font size',
-        default: 'default',
+        default: 'Default',
       },
       TextColor: {
         tooltip: 'Text color',
       },
       TextHighlight: {
         tooltip: 'Text highlight',
+      },
+      FillColor: {
+        tooltip: 'Fill color',
       },
       LineHeight: {
         tooltip: 'Line height',
@@ -202,13 +209,20 @@ export default {
           title: 'Preview',
         },
       },
+      Search: {
+        tooltip: 'Search',
+      },
       SelectAll: {
         tooltip: 'Select all',
       },
       CodeView: {
         tooltip: 'Code view',
       },
+      DragItem: {
+        tooltip: 'Drag item',
+      },
     },
     characters: 'Characters',
+    words: 'words',
   },
 };

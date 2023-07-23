@@ -42,4 +42,9 @@ declare module 'tiptap-extensions' {
   }
   class History extends Extension {}
   class HorizontalRule extends Extension {}
+  class CodeBlockHighlight extends Extension {}
+  class Collaboration extends Extension {}
+  class Cursors extends Extension {}
+  class QuickInsert extends Extension {}
+  class Drop extends Extension {}
 }

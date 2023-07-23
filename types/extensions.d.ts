@@ -38,5 +38,10 @@ export class Fullscreen {}
 export class Print {}
 export class Preview {}
 export class SelectAll {}
-export class CodeView {}
+export class Search {}
+export class MenuSplit {}
+export class Collaboration {}
+export class Cursors {}
+export class QuickInsert {}
+export class Drop {}
 export class Comments {}

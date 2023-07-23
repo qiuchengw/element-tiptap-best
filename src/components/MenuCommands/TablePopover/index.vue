@@ -105,12 +105,14 @@
 
     <command-button
       slot="reference"
+      style="width: 40px"
       :is-active="isTableActive"
       :enable-tooltip="et.tooltip"
       :tooltip="et.t('editor.extensions.Table.tooltip')"
       :readonly="et.isCodeViewMode"
-      icon="table"
-    />
+      icon="table">
+      <i class="el-icon-caret-bottom" style="width: 10px; color: #bbb; margin-left: 2px"></i>
+    </command-button>
   </el-popover>
 </template>
 
@@ -140,34 +142,37 @@ export default class TablePopover extends Vue {
 
   @Inject() readonly et!: any;
 
-  private get editor() {
+  private get editor () {
     return this.editorContext.editor;
   }
 
-  private get isTableActive() {
+  private get isTableActive () {
     return isTableActive(this.editor.state);
   }
 
-  private get enableMergeCells() {
+  private get enableMergeCells () {
     return enableMergeCells(this.editor.state);
   }
 
-  private get enableSplitCell() {
+  private get enableSplitCell () {
     return enableSplitCell(this.editor.state);
   }
 
-  hidePopover(): void {
+  hidePopover (): void {
     this.popoverVisible = false;
   }
 
-  createTable({ row, col }: { row: number, col: number }): void {
+  createTable ({ row, col }: { row: number, col: number }): void {
     this.editorContext.commands.createTable({
       rowsCount: row,
       colsCount: col,
       withHeaderRow: true,
     });
-
     this.hidePopover();
+
+    setTimeout(() => {
+      this.editorContext.editor.view.focus();
+    }, 500);
   }
 };
 </script>

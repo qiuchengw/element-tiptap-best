@@ -31,6 +31,7 @@ export default {
           tooltip: '添加链接',
           control: {
             title: '添加链接',
+            text: '内容',
             href: '链接',
             open_in_new_tab: '在新标签页中打开',
             confirm: '添加',
@@ -41,6 +42,7 @@ export default {
           tooltip: '编辑链接',
           control: {
             title: '编辑链接',
+            text: '内容',
             href: '链接',
             open_in_new_tab: '在新标签页中打开',
             confirm: '更新',
@@ -119,6 +121,7 @@ export default {
         tooltip: '任务列表',
       },
       TextAlign: {
+        tooltip: '对齐方式',
         buttons: {
           align_left: {
             tooltip: '左对齐',
@@ -136,6 +139,7 @@ export default {
       },
       FontType: {
         tooltip: '字体',
+        default: '默认字体',
       },
       FontSize: {
         tooltip: '字号',
@@ -146,6 +150,9 @@ export default {
       },
       TextHighlight: {
         tooltip: '文本高亮',
+      },
+      FillColor: {
+        tooltip: '填充颜色',
       },
       LineHeight: {
         tooltip: '行距',
@@ -197,10 +204,13 @@ export default {
         tooltip: '打印',
       },
       Preview: {
-        tooltip: '预览',
+        tooltip: '演示模式',
         dialog: {
-          title: '预览',
+          title: '演示模式',
         },
+      },
+      Search: {
+        tooltip: '搜索',
       },
       SelectAll: {
         tooltip: '全选',
@@ -208,7 +218,11 @@ export default {
       CodeView: {
         tooltip: '查看源代码',
       },
+      DragItem: {
+        tooltip: '拖动列表',
+      },
     },
-    characters: '字数',
+    characters: '字符',
+    words: '个字',
   },
 };

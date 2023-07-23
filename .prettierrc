@@ -1,0 +1,6 @@
+{
+    "singleQuote": true, // 单独加上这一条就行
+    "tabWidth": 2, // 行前4个空格
+    "semi": true, // 末尾加上分号
+    "trailingComma": "none" // 取消末尾加上逗号
+}

@@ -1,16 +1,16 @@
 import { Extension, MenuData, CommandGetter } from 'tiptap';
 import { CommandFunction } from 'tiptap-commands';
-import { MenuBtnView, MenuBtnComponentOptions } from '@/../types';
-import { setTextAlign, isTextAlignActive } from '@/utils/text_align';
+import { MenuBtnView } from '@/../types';
+import { setTextAlign } from '@/utils/text_align';
 import { Alignment, ALIGN_PATTERN } from '@/constants';
-import CommandButton from '@/components/MenuCommands/CommandButton.vue';
+import TextAlignDropdown from '@/components/MenuCommands/TextAlignDropdown.vue';
 
 export default class TextAlign extends Extension implements MenuBtnView {
-  get name() {
+  get name () {
     return 'text_align';
   }
 
-  get defaultOptions() {
+  get defaultOptions () {
     return {
       alignments: [
         Alignment.left,
@@ -21,7 +21,7 @@ export default class TextAlign extends Extension implements MenuBtnView {
     };
   }
 
-  commands() {
+  commands () {
     return this.options.alignments.reduce((commands: CommandGetter, alignment: Alignment) => {
       if (!ALIGN_PATTERN.test(alignment)) return commands;
 
@@ -45,23 +45,13 @@ export default class TextAlign extends Extension implements MenuBtnView {
     }, {});
   }
 
-  menuBtnView({ commands, editor, t }: MenuData) {
-    return this.options.alignments.reduce((views: Array<MenuBtnComponentOptions>, alignment: Alignment) => {
-      if (!ALIGN_PATTERN.test(alignment)) return views;
-
-      const isActive = alignment === 'left'
-        ? false
-        : isTextAlignActive(editor.state, alignment);
-
-      return views.concat({
-        component: CommandButton,
-        componentProps: {
-          isActive,
-          command: commands[`align_${alignment}`],
-          icon: `align-${alignment}`,
-          tooltip: t(`editor.extensions.TextAlign.buttons.align_${alignment}.tooltip`),
-        },
-      });
-    }, []);
+  menuBtnView (editorContext: MenuData) {
+    return {
+      component: TextAlignDropdown,
+      componentProps: {
+        editorContext: editorContext,
+        tooltip: editorContext.t('editor.extensions.TextAlign.tooltip'),
+      },
+    };
   }
 }

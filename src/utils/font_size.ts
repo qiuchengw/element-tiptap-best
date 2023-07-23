@@ -1,18 +1,24 @@
 // @ts-ignore
 import { getMarkAttrs } from 'tiptap-utils';
-import { Transaction, TextSelection, AllSelection, EditorState } from 'prosemirror-state';
+import { Transaction, TextSelection, EditorState } from 'prosemirror-state';
 import { Mark as ProsemirrorMark, MarkType } from 'prosemirror-model';
 import applyMark from './apply_mark';
 
 export const DEFAULT_FONT_SIZES = [
   '8',
+  '9',
   '10',
+  '10.5',
+  '11',
   '12',
   '14',
   '16',
   '18',
   '20',
+  '22',
   '24',
+  '26',
+  '28',
   '30',
   '36',
   '48',
@@ -20,31 +26,32 @@ export const DEFAULT_FONT_SIZES = [
   '72',
 ];
 
-export const DEFAULT_FONT_SIZE = 'default';
+export const DEFAULT_FONT_SIZE = '12';
 
-const SIZE_PATTERN = /([\d.]+)px/i;
+const SIZE_PATTERN = /([\d.]+)(px|pt)/i;
 
-export function convertToPX(styleValue: string): string {
+export function convertToPT (styleValue: string): string {
   const matches = styleValue.match(SIZE_PATTERN);
   if (!matches) return '';
   const value = matches[1];
   if (!value) return '';
+  if (matches[2] === 'px') {
+    return `${parseFloat((Number(value) * 0.75).toFixed(2))}`;
+  }
   return value;
 }
 
-export function setFontSize(tr: Transaction, type: MarkType, fontSize: string): Transaction {
+export function setFontSize (tr: Transaction, type: MarkType, fontSize: string): Transaction {
   const { selection } = tr;
-
-  if (!(selection instanceof TextSelection || selection instanceof AllSelection)) {
+  if (!selection) {
     return tr;
   }
-
-  const attrs = (fontSize && fontSize !== DEFAULT_FONT_SIZE) ? { px: fontSize } : null;
+  const attrs = (fontSize && fontSize !== DEFAULT_FONT_SIZE) ? { pt: fontSize } : null;
   tr = applyMark(tr, type, attrs);
   return tr;
 }
 
-export function findActiveFontSize(state: EditorState): string {
+export function findActiveFontSize (state: EditorState): string {
   const { schema, selection, tr } = state;
   const markType = schema.marks.font_size;
 
@@ -64,11 +71,11 @@ export function findActiveFontSize(state: EditorState): string {
       [];
 
     const sm = storedMarks.find((m: ProsemirrorMark) => m.type === markType);
-    return sm ? String(sm.attrs.px || DEFAULT_FONT_SIZE) : DEFAULT_FONT_SIZE;
+    return sm ? String(sm.attrs.pt || DEFAULT_FONT_SIZE) : DEFAULT_FONT_SIZE;
   }
 
   const attrs = getMarkAttrs(state, markType);
-  const fontSize = attrs.px;
+  const fontSize = attrs.pt;
   if (fontSize) return String(fontSize);
 
   return DEFAULT_FONT_SIZE;

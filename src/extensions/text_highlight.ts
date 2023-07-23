@@ -7,17 +7,17 @@ import { COLOR_SET, isHexColor } from '@/utils/color';
 import ColorPopover from '../components/MenuCommands/ColorPopover.vue';
 
 export default class TextHighlight extends Mark implements MenuBtnView {
-  get name() {
+  get name () {
     return 'text_highlight';
   }
 
-  get defaultOptions() {
+  get defaultOptions () {
     return {
       colors: COLOR_SET,
     };
   }
 
-  get schema() {
+  get schema () {
     return {
       attrs: {
         highlightColor: '',
@@ -28,28 +28,25 @@ export default class TextHighlight extends Mark implements MenuBtnView {
         tag: 'span[style*=background-color]',
         getAttrs: (dom: HTMLElement) => {
           const { backgroundColor } = dom.style;
-          console.log("===> fuck 222222", backgroundColor, dom);
+
           return {
             highlightColor: backgroundColor,
           };
         },
       }],
-      toDOM(node) {
+      toDOM (node) {
         const { highlightColor } = node.attrs;
         let style = '';
         if (highlightColor) {
           style += `background-color: ${highlightColor};`;
         }
-        let ret = ['span', { style }, 0];
-        console.log("====> fuck styel:", style, ret);
-        return ret;
+        return ['span', { style }, 0];
       },
     };
   }
 
-  commands() {
+  commands () {
     return (color: string): CommandFunction => (state, dispatch) => {
-      console.log("======> fuck corlo:", color);
       if (color !== undefined) {
         const { schema } = state;
         let { tr } = state;
@@ -69,17 +66,21 @@ export default class TextHighlight extends Mark implements MenuBtnView {
     };
   }
 
-  menuBtnView({ commands, getMarkAttrs, t }: MenuData) {
+  menuBtnView ({ commands, getMarkAttrs, editor, t }: MenuData) {
     return {
       component: ColorPopover,
       componentProps: {
         colorSet: this.options.colors,
         selectedColor: getMarkAttrs('text_highlight').highlightColor,
+        lastColor: editor.view.lastTextHightlight || '#ffc107',
         tooltip: t('editor.extensions.TextHighlight.tooltip'),
         icon: 'highlighter',
       },
       componentEvents: {
-        confirm: (color: string) => commands.text_highlight(color),
+        confirm: (color: string) => {
+          commands.text_highlight(color);
+          editor.view.lastTextHightlight = color;
+        },
       },
     };
   }

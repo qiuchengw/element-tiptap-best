@@ -1,6 +1,6 @@
 // @ts-ignore
 import { getMarkAttrs } from 'tiptap-utils';
-import { Transaction, TextSelection, AllSelection, EditorState } from 'prosemirror-state';
+import { Transaction, TextSelection, EditorState } from 'prosemirror-state';
 import { Mark as ProsemirrorMark, MarkType } from 'prosemirror-model';
 import applyMark from './apply_mark';
 
@@ -18,15 +18,18 @@ const DEFAULT_FONT_TYPE_NAMES = [
   'monospace',
 ];
 
-export const DEFAULT_FONT_TYPE_MAP = DEFAULT_FONT_TYPE_NAMES.reduce((obj: { [key: string]: string }, type: string) => {
-  obj[type] = type;
+export const DEFAULT_FONT_TYPE_MAP = DEFAULT_FONT_TYPE_NAMES.reduce((obj: any, type: string) => {
+  obj[type] = {
+    label: type,
+    value: type,
+  };
   return obj;
 }, {});
 
-export function setFontType(tr: Transaction, type: MarkType, name: string): Transaction {
+export function setFontType (tr: Transaction, type: MarkType, name: string): Transaction {
   const { selection } = tr;
 
-  if (!(selection instanceof TextSelection || selection instanceof AllSelection)) {
+  if (!selection) {
     return tr;
   }
   const attrs = name ? { name } : null;
@@ -36,7 +39,7 @@ export function setFontType(tr: Transaction, type: MarkType, name: string): Tran
 
 const DEFAULT_FONT_TYPE = '';
 
-export function findActiveFontType(state: EditorState): string {
+export function findActiveFontType (state: EditorState): string {
   const { schema, selection, tr } = state;
   const markType = schema.marks.font_type;
 

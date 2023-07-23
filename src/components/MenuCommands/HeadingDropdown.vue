@@ -2,18 +2,19 @@
   <el-dropdown
     placement="bottom"
     trigger="click"
+    style="vertical-align: middle;"
     @command="i => i > 0
       ? editorContext.commands.heading({ level: i })
       : editorContext.commands.paragraph()
     "
   >
-    <command-button
-      :is-active="isHeadingActive()"
-      :enable-tooltip="et.tooltip"
-      :tooltip="et.t('editor.extensions.Heading.tooltip')"
-      :readonly="et.isCodeViewMode"
-      icon="heading"
-    />
+    <el-tooltip effect="dark" :content="et.t('editor.extensions.Heading.tooltip')" :enterable="false" placement="top">
+      <div class="heading_menu_btn">
+        <span class="heading_name" :title="heading">{{heading}}</span>
+        <i class="el-icon-caret-bottom" style="margin-left: 2px; color: #bbb"></i>
+      </div>
+    </el-tooltip>
+
     <el-dropdown-menu
       slot="dropdown"
       class="el-tiptap-dropdown-menu"
@@ -50,8 +51,8 @@
 <script lang="ts">
 import { Component, Prop, Inject, Vue } from 'vue-property-decorator';
 import { MenuData } from 'tiptap';
-import { Dropdown, DropdownMenu, DropdownItem } from 'element-ui';
-import { isHeadingActive } from '@/utils/heading';
+import { Dropdown, DropdownMenu, DropdownItem, Tooltip } from 'element-ui';
+import { isHeadingActive, findHeading } from '@/utils/heading';
 import CommandButton from './CommandButton.vue';
 
 @Component({
@@ -59,6 +60,7 @@ import CommandButton from './CommandButton.vue';
     [Dropdown.name]: Dropdown,
     [DropdownMenu.name]: DropdownMenu,
     [DropdownItem.name]: DropdownItem,
+    [Tooltip.name]: Tooltip,
     CommandButton,
   },
 })
@@ -71,16 +73,50 @@ export default class HeadingDropdown extends Vue {
 
   @Inject() readonly et!: any;
 
-  private get editor() {
+  private get editor () {
     return this.editorContext.editor;
   }
 
-  private get level() {
+  private get level () {
     return this.editor.extensions.options.heading.level;
   }
 
-  private isHeadingActive(level: number): boolean {
+  private get heading () {
+    const heading = findHeading(this.editor.state);
+    if (heading && heading.node && heading.node.attrs) {
+      return this.et.t('editor.extensions.Heading.buttons.heading') + heading.node.attrs.level;
+    } else {
+      return this.et.t('editor.extensions.Heading.buttons.paragraph');
+    }
+  }
+
+  private isHeadingActive (level: number): boolean {
     return isHeadingActive(this.editor.state, level);
   }
 };
 </script>
+
+<style scoped>
+  .heading_menu_btn {
+    width: 70px;
+    height: 29px;
+    /*margin: 1px;*/
+    padding: 0 2px 0 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 4px;
+    cursor: pointer;
+    outline: none;
+  }
+  .heading_menu_btn:hover {
+    background: #e4e9f2;
+  }
+  .heading_name {
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+  }
+</style>

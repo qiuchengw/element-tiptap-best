@@ -4,20 +4,20 @@ import { CommandFunction } from 'tiptap-commands';
 import { MenuBtnView } from '@/../types';
 import applyMark from '@/utils/apply_mark';
 import { COLOR_SET, isHexColor } from '@/utils/color';
-import ColorPopover from '@/components/MenuCommands/ColorPopover.vue';
+import FontColorPicker from '@/components/MenuCommands/FontColorPicker.vue';
 
 export default class TextColor extends Mark implements MenuBtnView {
-  get name() {
+  get name () {
     return 'text_color';
   }
 
-  get defaultOptions() {
+  get defaultOptions () {
     return {
       colors: COLOR_SET,
     };
   }
 
-  get schema() {
+  get schema () {
     return {
       attrs: {
         color: '',
@@ -32,7 +32,7 @@ export default class TextColor extends Mark implements MenuBtnView {
           };
         },
       }],
-      toDOM(node) {
+      toDOM (node) {
         const { color } = node.attrs;
         let style = '';
         if (color) {
@@ -43,7 +43,7 @@ export default class TextColor extends Mark implements MenuBtnView {
     };
   }
 
-  commands() {
+  commands () {
     return (color: string): CommandFunction => (state, dispatch) => {
       if (color !== undefined) {
         const { schema } = state;
@@ -64,17 +64,21 @@ export default class TextColor extends Mark implements MenuBtnView {
     };
   }
 
-  menuBtnView({ commands, getMarkAttrs, t }: MenuData) {
+  menuBtnView ({ commands, getMarkAttrs, editor, t }: MenuData) {
     return {
-      component: ColorPopover,
+      component: FontColorPicker,
       componentProps: {
         colorSet: this.options.colors,
         selectedColor: getMarkAttrs('text_color').color,
+        lastColor: editor.view.lastTextColor || '#000000',
         tooltip: t('editor.extensions.TextColor.tooltip'),
         icon: 'tint',
       },
       componentEvents: {
-        confirm: (color: string) => commands.text_color(color),
+        confirm: (color: string) => {
+          commands.text_color(color);
+          editor.view.lastTextColor = color;
+        },
       },
     };
   }

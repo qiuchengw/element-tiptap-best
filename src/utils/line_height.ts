@@ -1,4 +1,4 @@
-import { TextSelection, AllSelection, EditorState, Transaction } from 'prosemirror-state';
+import { EditorState, Transaction } from 'prosemirror-state';
 import { Node as ProsemirrorNode, NodeType } from 'prosemirror-model';
 import { CommandFunction } from 'tiptap-commands';
 import { LINE_HEIGHT_100, DEFAULT_LINE_HEIGHT } from '@/constants';
@@ -12,7 +12,7 @@ export const ALLOWED_NODE_TYPES = [
 
 const NUMBER_VALUE_PATTERN = /^\d+(.\d+)?$/;
 
-export function isLineHeightActive(state: EditorState, lineHeight: string): boolean {
+export function isLineHeightActive (state: EditorState, lineHeight: string): boolean {
   const { selection, doc } = state;
   const { from, to } = selection;
 
@@ -38,20 +38,20 @@ export function isLineHeightActive(state: EditorState, lineHeight: string): bool
   return active;
 }
 
-export function transformLineHeightToCSS(value: string | number): string {
+export function transformLineHeightToCSS (value: string | number): string {
   if (!value) return '';
 
   let strValue = String(value);
 
   if (NUMBER_VALUE_PATTERN.test(strValue)) {
     const numValue = parseFloat(strValue);
-    strValue = String(Math.round(numValue * 100)) + '%';
+    strValue = (numValue * LINE_HEIGHT_100).toFixed(1);
   }
 
-  return parseFloat(strValue) * LINE_HEIGHT_100 + '%';
+  return strValue;
 }
 
-export function transformCSStoLineHeight(value: string): string {
+export function transformCSStoLineHeight (value: string): string {
   if (!value) return '';
   if (value === DEFAULT_LINE_HEIGHT) return '';
 
@@ -59,11 +59,11 @@ export function transformCSStoLineHeight(value: string): string {
 
   if (NUMBER_VALUE_PATTERN.test(value)) {
     const numValue = parseFloat(value);
-    strValue = String(Math.round(numValue * 100)) + '%';
+    strValue = (numValue * LINE_HEIGHT_100).toFixed(1);
     if (strValue === DEFAULT_LINE_HEIGHT) return '';
   }
 
-  return parseFloat(strValue) / LINE_HEIGHT_100 + '%';
+  return strValue;
 }
 
 interface SetLineHeightTask {
@@ -72,12 +72,12 @@ interface SetLineHeightTask {
   pos: number,
 }
 
-export function setTextLineHeight(tr: Transaction, lineHeight: string | null): Transaction {
+export function setTextLineHeight (tr: Transaction, lineHeight: string | null): Transaction {
   const { selection, doc } = tr;
 
   if (!selection || !doc) return tr;
 
-  if (!(selection instanceof TextSelection || selection instanceof AllSelection)) {
+  if (!selection) {
     return tr;
   }
 
@@ -119,7 +119,7 @@ export function setTextLineHeight(tr: Transaction, lineHeight: string | null): T
   return tr;
 }
 
-export function createLineHeightCommand(lineHeight: string): CommandFunction {
+export function createLineHeightCommand (lineHeight: string): CommandFunction {
   return (state, dispatch) => {
     const { selection } = state;
     let { tr } = state;
