@@ -3,6 +3,9 @@
     <el-tiptap
       :extensions="textExtensions"
       content="Text Extensions"
+      :userProps="extraProps"
+      @comment="handleComment"
+      @onTransaction="onTransactionEvent"
     />
 
     <el-tiptap
@@ -70,14 +73,30 @@ import {
   Preview,
   QuickInsert,
   Drop,
+  Comments
 } from 'element-tiptap';
 
 import javascript from 'highlight.js/lib/languages/javascript';
 import css from 'highlight.js/lib/languages/css';
 
+let cnt = 0;
+
 export default {
   data () {
     return {
+      extraProps: {
+        comments: {
+          onAddComment: (comment, quote) => {
+            console.log('====onAddComment:', comment, quote);
+            cnt++;
+            console.log('===> fuck cnt:', cnt);
+            return `${cnt}`;
+          },
+          onSelectComment: (comment_id) => {
+            console.log('====onSelectComment:', comment_id);
+          },
+        },
+      },
       textExtensions: [
         new Doc(),
         new Text(),
@@ -93,6 +112,7 @@ export default {
         new TextHighlight({ bubble: true }),
         new FormatClear(),
         new History(),
+        new Comments({bubble: true}),
       ],
       paragraphExtensions: [
         new Title(),
@@ -190,6 +210,14 @@ export default {
     onInit ({ editor }) {
       this.editor = editor;
       console.log(this.editor);
+    },
+
+    handleComment(editor) {
+      console.log('====editor comment:', editor);
+    },
+
+    onTransactionEvent(event) {
+      console.log('🔥transaction', event);
     },
 
     onUpdate (output, options) {

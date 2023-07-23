@@ -4,6 +4,7 @@ tests/
 node_modules/
 src/micpo
 src/
+examples/
 
 # 忽略文件
 **/*-min.js

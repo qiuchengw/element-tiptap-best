@@ -8,6 +8,7 @@ declare module 'tiptap-extensions' {
   class Strike extends Mark {}
   class Link extends Mark {}
   class Code extends Mark {}
+  class Comments extends Mark {}
 
   // node
   class Heading extends Node {

@@ -246,6 +246,12 @@ export default class ElTiptap extends Mixins(EditorStylesMixin) {
     readonly editorBubbleMenuClass!: string | any[] | object;
 
     @Prop({
+        type: Object,
+        default: undefined,
+    })
+    readonly userProps!: object;
+
+    @Prop({
         type: [String, Array, Object],
         default: undefined,
     })
@@ -383,6 +389,12 @@ export default class ElTiptap extends Mixins(EditorStylesMixin) {
             onPaste: this.onPaste.bind(this),
             onDrop: this.onDrop.bind(this),
         });
+
+        // 加入一些自定义的事件
+        // @ts-ignore
+        this.editor.emit = this.emitEvent.bind(this);
+        // @ts-ignore
+        this.editor.userProps = this.userProps;
 
         this.$emit(this.genEvent(EVENTS.INIT), {
             editor: this.editor,

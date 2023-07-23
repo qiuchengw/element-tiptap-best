@@ -2,16 +2,13 @@
 
 // 参考：https://github.com/radans/tiptap-comments
 //
-// import { Mark, MenuData, mergeAttributes } from 'tiptap';
 import { Mark, MenuData } from 'tiptap';
 import { Plugin, TextSelection } from 'prosemirror-state';
 import { getMarkRange, getMarkAttrs } from 'tiptap-utils';
-import { v4 as uuidv4 } from "uuid";
-// import {findIndex} from 'lodash'
-import CommentPopover from '@/components/MenuCommands/CommentPopover.vue';
 import { CommandFunction } from 'tiptap-commands';
 import { MenuBtnView } from '@/../types';
 import applyMark from '@/utils/apply_mark';
+import CommentPopover from '@/components/MenuCommands/CommentPopover.vue';
 
 declare module 'tiptap' {
     interface Commands<ReturnType> {
@@ -62,7 +59,7 @@ export default class Comments extends Mark implements MenuBtnView {
                         highlightColor: backgroundColor,
                         comment_id: dom.getAttribute('comment_id')
                     };
-                    console.log("=========> get attr:", ret);
+                    // console.log("=========> get attr:", ret);
                     return ret;
                 },
             }],
@@ -119,8 +116,8 @@ export default class Comments extends Mark implements MenuBtnView {
         return {
             setComment: (comment, quoteText): CommandFunction =>
                 (state, dispatch) => {
-                    console.log("===> the comment:", this.storage);
                     // 添加评论
+                    // console.log("===> the comment:", this.commentsProps);
                     let comment_id = null;
                     if (this.commentsProps?.onAddComment) {
                         comment_id = this.commentsProps.onAddComment(comment, quoteText);
@@ -172,7 +169,7 @@ export default class Comments extends Mark implements MenuBtnView {
             },
             componentEvents: {
                 confirm: (value: string) => {
-                    console.log("====> hello value:", value, menuData);
+                    // console.log("====> hello value:", value, menuData);
                     commands.setComment({
                         comment: value,
                     });
