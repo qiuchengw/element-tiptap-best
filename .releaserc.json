@@ -1,8 +1,10 @@
 {
   "branches": [
     "master",
-    { "name": "beta", "prerelease": true },
-    { "name": "alpha", "prerelease": true }
+    {
+      "name": "beta",
+      "prerelease": true
+    }
   ],
   "tagFormat": "@${version}",
   "plugins": [
@@ -11,11 +13,27 @@
       {
         "preset": "angular",
         "releaseRules": [
-          { "type": "docs", "scope": "README", "release": "patch" },
-          { "type": "refactor", "release": "patch" },
-          { "type": "style", "release": "patch" },
-          { "type": "chore", "release": false },
-          { "type": "example", "release": false }
+          {
+            "type": "docs",
+            "scope": "README",
+            "release": "patch"
+          },
+          {
+            "type": "refactor",
+            "release": "patch"
+          },
+          {
+            "type": "style",
+            "release": "patch"
+          },
+          {
+            "type": "chore",
+            "release": false
+          },
+          {
+            "type": "example",
+            "release": false
+          }
         ]
       }
     ],
@@ -30,7 +48,10 @@
       "@semantic-release/github",
       {
         "assets": [
-          { "path": "lib/element-tiptap.js", "label": "UMD module" },
+          {
+            "path": "lib/element-tiptap.js",
+            "label": "UMD module"
+          },
           {
             "path": "lib/element-tiptap.min.js",
             "label": "UMD optimize module"

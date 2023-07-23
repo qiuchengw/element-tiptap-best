@@ -29,25 +29,25 @@
         }
       }
     ],
-    // "linebreak-style": [
-    //   "warn",
-    //   "unix"
-    // ],
+    "linebreak-style": [
+      "error",
+      "unix"
+    ],
     "quotes": [
       "error",
       "single"
     ],
-    // "no-multi-spaces": [
-    //   "error",
-    //   {
-    //     "exceptions": {
-    //       "VariableDeclarator": true
-    //     }
-    //   }
-    // ],
+    "no-multi-spaces": [
+      "error",
+      {
+        "exceptions": {
+          "VariableDeclarator": true
+        }
+      }
+    ],
     "space-before-function-paren": [
       "error",
-      "never"
+      "always"
     ],
     "no-unused-vars": "off",
     "camelcase": "off",
