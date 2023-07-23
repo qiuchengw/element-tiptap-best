@@ -18,6 +18,7 @@
 </template>
 
 <script lang="ts">
+// @ts-ignore
 import Icon from "vue-awesome";
 import "vue-awesome/icons/heading";
 import "vue-awesome/icons/font";

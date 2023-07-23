@@ -136,10 +136,7 @@ import { Trans } from "@/i18n";
 import MenuBar from "./MenuBar/index.vue";
 import MenuBubble from "./MenuBubble/index.vue";
 // @ts-ignore
-import {
-    addResizeListener,
-    removeResizeListener,
-} from "element-ui/src/utils/resize-event";
+import {addResizeListener,removeResizeListener} from "element-ui/src/utils/resize-event";
 import QuickInsertView from "@/components/ExtensionViews/QuickInsertView.vue";
 
 const COMMON_EMIT_EVENTS: EVENTS[] = [
@@ -189,6 +186,7 @@ export default class ElTiptap extends Mixins(EditorStylesMixin) {
         type: String,
         default: "html",
         validator(output): boolean {
+            // @ts-ignore
             return ["html", "json"].includes(output);
         },
     })

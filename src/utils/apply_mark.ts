@@ -23,6 +23,7 @@ export default function applyMark (tr: Transaction, markType: MarkType, attrs: o
   // @ts-ignore
   const { empty, $cursor, ranges } = tr.selection;
 
+  // @ts-ignore
   if ((empty && !$cursor) || !markApplies(tr.doc, ranges, markType)) return tr;
 
   if ($cursor) {

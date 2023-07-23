@@ -35,6 +35,7 @@ import {
 } from "vue-property-decorator";
 import { Tooltip } from "element-ui";
 import ColorPicker from "../ColorPicker/index.vue";
+// @ts-ignore
 import Icon from "vue-awesome";
 import "vue-awesome/icons/fill-drip";
 

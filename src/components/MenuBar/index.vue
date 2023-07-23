@@ -50,6 +50,7 @@ import { Popover } from "element-ui";
 import {
     addResizeListener,
     removeResizeListener,
+// @ts-ignore
 } from "element-ui/src/utils/resize-event";
 
 @Component({

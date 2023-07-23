@@ -43,6 +43,7 @@ import { MenuData } from "tiptap";
 import { Dropdown, DropdownMenu, DropdownItem, Tooltip } from "element-ui";
 import { findTextAlign } from "@/utils/text_align";
 
+// @ts-ignore
 import Icon from "vue-awesome";
 import "vue-awesome/icons/align-left";
 import "vue-awesome/icons/align-center";
