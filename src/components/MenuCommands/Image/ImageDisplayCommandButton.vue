@@ -44,10 +44,10 @@ import CommandButton from '../CommandButton.vue';
 })
 export default class ImageDisplayCommandButton extends Vue {
   @Prop({
-    type: ProsemirrorNode,
+    type: [ProsemirrorNode, Object],
     required: true,
   })
-  readonly node!: ProsemirrorNode;
+  readonly node!: ProsemirrorNode | Object;
 
   @Prop({
     type: Function,
@@ -66,8 +66,9 @@ export default class ImageDisplayCommandButton extends Vue {
     ImageDisplay.FLOAT_RIGHT,
   ];
 
-  private get currDisplay () {
-    return this.node.attrs.display;
+  private get currDisplay() {
+    // @ts-ignore
+    return this.node?.attrs?.display;
   }
 
   private hidePopover () {

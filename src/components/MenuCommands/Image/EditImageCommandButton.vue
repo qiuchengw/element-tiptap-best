@@ -100,10 +100,10 @@ import CommandButton from '../CommandButton.vue';
 })
 export default class EditImageCommandButton extends Vue {
   @Prop({
-    type: ProsemirrorNode,
+    type: [ProsemirrorNode, Object],
     required: true,
   })
-  readonly node!: ProsemirrorNode;
+  readonly node!: ProsemirrorNode | Object;
 
   @Prop({
     type: Function,
@@ -123,9 +123,13 @@ export default class EditImageCommandButton extends Vue {
 
   private getImageAttrs () {
     return {
+        // @ts-ignore
       src: this.node.attrs.src,
+        // @ts-ignore
       alt: this.node.attrs.alt,
+        // @ts-ignore
       width: this.node.attrs.width,
+        // @ts-ignore
       height: this.node.attrs.height,
     };
   }

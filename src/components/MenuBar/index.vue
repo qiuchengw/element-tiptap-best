@@ -77,20 +77,23 @@ export default class Menubar extends Vue {
 
     private mounted(): void {
         this.$nextTick(() => {
-            const listLeft = this.defaultListDom.offsetLeft;
-            const children = this.defaultListDom.children;
-            for (var i = 0; i < children.length; ++i) {
-                let item = children[i];
-                this.offsetArray.push({
-                    position: item.offsetLeft + item.offsetWidth - listLeft,
-                });
+            const listLeft = this.defaultListDom?.offsetLeft || 0;
+            const children = this.defaultListDom?.children;
+            console.log("=====", this.defaultListDom);
+            if (children) {
+                for (var i = 0; i < children?.length || 0; ++i) {
+                    let item = children[i];
+                    this.offsetArray.push({
+                        position: (item.offsetLeft || 0) + item.offsetWidth - listLeft,
+                    });
+                }
             }
             // children.forEach((item: any) => {
             //     this.offsetArray.push({
             //         position: item.offsetLeft + item.offsetWidth - listLeft,
             //     });
             // });
-            addResizeListener(this.menuBarWrapDom, this.menuResize);
+            // addResizeListener(this.menuBarWrapDom, this.menuResize);
         });
     }
 

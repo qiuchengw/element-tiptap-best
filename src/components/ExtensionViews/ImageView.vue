@@ -82,10 +82,10 @@ const MAX_SIZE = 100000;
 })
 export default class ImageView extends Vue {
     @Prop({
-        type: ProsemirrorNode,
+        type: [ProsemirrorNode, Object],
         required: true,
     })
-    readonly node!: ProsemirrorNode;
+    readonly node!: ProsemirrorNode | Object;
 
     @Prop({
         // TODO: EditorView type check failed
@@ -148,18 +148,22 @@ export default class ImageView extends Vue {
     };
 
     private get src(): string {
-        return this.node.attrs.src;
+        // @ts-ignore
+        return this.node?.attrs?.src;
     }
 
     private get width(): number {
+        // @ts-ignore
         return this.node.attrs.width;
     }
 
     private get height(): number {
+        // @ts-ignore
         return this.node.attrs.height;
     }
 
     private get display(): ImageDisplay {
+        // @ts-ignore
         return this.node.attrs.display;
     }
 
@@ -225,6 +229,7 @@ export default class ImageView extends Vue {
         const originalHeight = this.originalSize.height;
         const aspectRatio = originalWidth / originalHeight;
 
+        // @ts-ignore
         let { width, height } = this.node.attrs;
         const maxWidth = this.maxSize.width;
 

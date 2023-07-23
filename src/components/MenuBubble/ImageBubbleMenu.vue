@@ -33,10 +33,10 @@ import RemoveImageCommandButton from '../MenuCommands/Image/RemoveImageCommandBu
 })
 export default class ImageBubbleMenu extends Vue {
   @Prop({
-    type: ProsemirrorNode,
+    type: [ProsemirrorNode, Object],
     required: true,
   })
-  readonly node!: ProsemirrorNode;
+  readonly node!: ProsemirrorNode | Object;
 
   @Prop({
     type: Object,
